@@ -28,7 +28,7 @@ function getTime(unixTimestamp) {
 	return date.toLocaleTimeString();
 }
 
-(async () => {
+(async main() => {
 
 	var greenHideData = await getDataFromAPI(greenDragonhideId);
 	var blueHideData = await getDataFromAPI(blueDragonhideId);
