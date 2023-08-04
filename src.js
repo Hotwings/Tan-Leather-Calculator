@@ -42,10 +42,10 @@ function getTime(unixTimestamp) {
 
 
 
-	var greenProfit = greenLeatherData.low - greenHideData.high;
-	var blueProfit = blueLeatherData.low - blueHideData.high;
-	var redProfit = redLeatherData.low - redHideData.high;
-	var blackProfit = blackLeatherData.low - blackHideData.high;
+	var greenProfit = Math.min(greenLeatherData.low,greenLeatherData.high) - Math.max(greenHideData.high,greenHideData.low);
+	var blueProfit = Math.min(blueLeatherData.low,blueLeatherData.high) - Math.max(blueHideData.high,blueHideData.low);
+	var redProfit = Math.min(redLeatherData.low,redLeatherData.high) - Math.max(redHideData.high,redHideData.low);
+	var blackProfit = Math.min(blackLeatherData.low,blackLeatherData.high) - Math.max(blackHideData.high,blackHideData.low);
 
 	document.getElementById('greenProfit').innerHTML = greenProfit;
 	document.getElementById('greenProfitPerHour').innerHTML = USDollar.format(greenProfit*7500);
