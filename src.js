@@ -9,11 +9,11 @@ var redDragonLeatherId = 2507;
 var blackDragonLeatherId = 2509;
 
 var baseRealTimeURL = "https://prices.runescape.wiki/api/v1/osrs/latest";
-var baseGeURL = "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
+//var baseGeURL = "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
 
 let USDollar = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+	style: 'currency',
+	currency: 'USD',
 });
 
 async function getDataFromRealTimeAPI(id) {
@@ -34,29 +34,29 @@ function getTimeString(unixTimestamp) {
 	return date.toLocaleTimeString();
 }
 
-function addHideColorToUI(hideData, leatherData, hideGE, leatherGE, color){
+function addHideColorToUI(hideData, leatherData,/* hideGE, leatherGE,*/ color) {
 
-	var cost = Math.max(hideData.high,hideData.low);
-	var revenue = Math.min(leatherData.low,leatherData.high)
-	var tax = Math.floor(revenue*.01);
+	var cost = Math.max(hideData.high, hideData.low);
+	var revenue = Math.min(leatherData.low, leatherData.high)
+	var tax = Math.floor(revenue * .01);
 
-	var profit = revenue-tax-cost;
+	var profit = revenue - tax - cost;
 
-	document.getElementById(color+'Profit').innerHTML = profit;
-	document.getElementById(color+'ProfitPerHour').innerHTML = USDollar.format(profit*7500);
+	document.getElementById(color + 'Profit').innerHTML = profit;
+	document.getElementById(color + 'ProfitPerHour').innerHTML = USDollar.format(profit * 7500);
 
-	
-	document.getElementById(color+'hgep').innerHTML = hideGE;
-	document.getElementById(color+'hhp').innerHTML = hideData.high;
-	document.getElementById(color+'hht').innerHTML = getTimeString(hideData.highTime);
-	document.getElementById(color+'hlp').innerHTML = hideData.low;
-	document.getElementById(color+'hlt').innerHTML = getTimeString(hideData.lowTime);
 
-	document.getElementById(color+'lgep').innerHTML = leatherGE;
-	document.getElementById(color+'lhp').innerHTML = leatherData.high;
-	document.getElementById(color+'lht').innerHTML = getTimeString(leatherData.highTime);
-	document.getElementById(color+'llp').innerHTML = leatherData.low;
-	document.getElementById(color+'llt').innerHTML = getTimeString(leatherData.lowTime);
+	//document.getElementById(color+'hgep').innerHTML = hideGE;
+	document.getElementById(color + 'hhp').innerHTML = hideData.high;
+	document.getElementById(color + 'hht').innerHTML = getTimeString(hideData.highTime);
+	document.getElementById(color + 'hlp').innerHTML = hideData.low;
+	document.getElementById(color + 'hlt').innerHTML = getTimeString(hideData.lowTime);
+
+	//document.getElementById(color+'lgep').innerHTML = leatherGE;
+	document.getElementById(color + 'lhp').innerHTML = leatherData.high;
+	document.getElementById(color + 'lht').innerHTML = getTimeString(leatherData.highTime);
+	document.getElementById(color + 'llp').innerHTML = leatherData.low;
+	document.getElementById(color + 'llt').innerHTML = getTimeString(leatherData.lowTime);
 
 }
 
@@ -67,26 +67,29 @@ function addHideColorToUI(hideData, leatherData, hideGE, leatherGE, color){
 	var redHideData = await getDataFromRealTimeAPI(redDragonhideId);
 	var blackHideData = await getDataFromRealTimeAPI(blackDragonhideId);
 
+	/*
 	var greenHideGEPrice = await getGEPrice(greenDragonhideId);
 	var blueHideGEPrice = await getGEPrice(blueDragonhideId);
 	var redHideGEPrice = await getGEPrice(redDragonhideId);
 	var blackHideGEPrice = await getGEPrice(blackDragonhideId);
-
+	*/
 
 	var greenLeatherData = await getDataFromRealTimeAPI(greenDragonLeatherId);
 	var blueLeatherData = await getDataFromRealTimeAPI(blueDragonLeatherId);
 	var redLeatherData = await getDataFromRealTimeAPI(redDragonLeatherId);
 	var blackLeatherData = await getDataFromRealTimeAPI(blackDragonLeatherId);
-	
+
+	/*
 	var greenLeatherGEPrice = await getGEPrice(greenDragonhideId);
 	var blueLeatherGEPrice = await getGEPrice(blueDragonhideId);
 	var redLeatherGEPrice = await getGEPrice(redDragonhideId);
 	var blackLeatherGEPrice = await getGEPrice(blackDragonhideId);
+	*/
 
-	addHideColorToUI(greenHideData,greenLeatherData, greenHideGEPrice, greenLeatherGEPrice,"green");
-	addHideColorToUI(blueHideData,blueLeatherData, blueHideGEPrice, blueLeatherGEPrice,"blue");
-	addHideColorToUI(redHideData,redLeatherData, redHideGEPrice, redLeatherGEPrice,"red");
-	addHideColorToUI(blackHideData,blackLeatherData, blackHideGEPrice, blackLeatherGEPrice,"black");
+	addHideColorToUI(greenHideData, greenLeatherData, /*greenHideGEPrice, greenLeatherGEPrice,*/"green");
+	addHideColorToUI(blueHideData, blueLeatherData, /*blueHideGEPrice, blueLeatherGEPrice,*/"blue");
+	addHideColorToUI(redHideData, redLeatherData, /*redHideGEPrice, redLeatherGEPrice,*/"red");
+	addHideColorToUI(blackHideData, blackLeatherData, /*blackHideGEPrice, blackLeatherGEPrice,*/"black");
 
 
 	/*
