@@ -8,19 +8,25 @@ var blueDragonLeatherId = 2505;
 var redDragonLeatherId = 2507;
 var blackDragonLeatherId = 2509;
 
-var baseURL = "https://prices.runescape.wiki/api/v1/osrs/latest";
+var baseRealTimeURL = "https://prices.runescape.wiki/api/v1/osrs/latest";
+var baseGeURL = "http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
 
 let USDollar = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
 });
 
-async function getDataFromAPI(id) {
-	const response = await fetch(baseURL + "?id=" + id);
+async function getDataFromRealTimeAPI(id) {
+	const response = await fetch(baseRealTimeURL + "?id=" + id);
 	const myJson = await response.json(); //extract JSON from the http response
 
 	return myJson.data[id];
+}
+async function getGEPrice(id) {
+	const response = await fetch(baseGeURL + "?item=" + id);
+	const myJson = await response.json(); //extract JSON from the http response
 
+	return myJson.item.current.price;
 }
 
 function getTimeString(unixTimestamp) {
@@ -28,7 +34,7 @@ function getTimeString(unixTimestamp) {
 	return date.toLocaleTimeString();
 }
 
-function addHideColorToUI(hideData, leatherData, color){
+function addHideColorToUI(hideData, leatherData, hideGE, leatherGE, color){
 
 	var cost = Math.max(hideData.high,hideData.low);
 	var revenue = Math.min(leatherData.low,leatherData.high)
@@ -39,11 +45,14 @@ function addHideColorToUI(hideData, leatherData, color){
 	document.getElementById(color+'Profit').innerHTML = profit;
 	document.getElementById(color+'ProfitPerHour').innerHTML = USDollar.format(profit*7500);
 
+	
+	document.getElementById(color+'hgep').innerHTML = hideGE;
 	document.getElementById(color+'hhp').innerHTML = hideData.high;
 	document.getElementById(color+'hht').innerHTML = getTimeString(hideData.highTime);
 	document.getElementById(color+'hlp').innerHTML = hideData.low;
 	document.getElementById(color+'hlt').innerHTML = getTimeString(hideData.lowTime);
 
+	document.getElementById(color+'lgep').innerHTML = leatherGE;
 	document.getElementById(color+'lhp').innerHTML = leatherData.high;
 	document.getElementById(color+'lht').innerHTML = getTimeString(leatherData.highTime);
 	document.getElementById(color+'llp').innerHTML = leatherData.low;
@@ -53,20 +62,31 @@ function addHideColorToUI(hideData, leatherData, color){
 
 (async () => {
 
-	var greenHideData = await getDataFromAPI(greenDragonhideId);
-	var blueHideData = await getDataFromAPI(blueDragonhideId);
-	var redHideData = await getDataFromAPI(redDragonhideId);
-	var blackHideData = await getDataFromAPI(blackDragonhideId);
+	var greenHideData = await getDataFromRealTimeAPI(greenDragonhideId);
+	var blueHideData = await getDataFromRealTimeAPI(blueDragonhideId);
+	var redHideData = await getDataFromRealTimeAPI(redDragonhideId);
+	var blackHideData = await getDataFromRealTimeAPI(blackDragonhideId);
 
-	var greenLeatherData = await getDataFromAPI(greenDragonLeatherId);
-	var blueLeatherData = await getDataFromAPI(blueDragonLeatherId);
-	var redLeatherData = await getDataFromAPI(redDragonLeatherId);
-	var blackLeatherData = await getDataFromAPI(blackDragonLeatherId);
+	var greenHideGEPrice = await getGEPrice(greenDragonhideId);
+	var blueHideGEPrice = await getGEPrice(blueDragonhideId);
+	var redHideGEPrice = await getGEPrice(redDragonhideId);
+	var blackHideGEPrice = await getGEPrice(blackDragonhideId);
 
-	addHideColorToUI(greenHideData,greenLeatherData,"green");
-	addHideColorToUI(blueHideData,blueLeatherData,"blue");
-	addHideColorToUI(redHideData,redLeatherData,"red");
-	addHideColorToUI(blackHideData,blackLeatherData,"black");
+
+	var greenLeatherData = await getDataFromRealTimeAPI(greenDragonLeatherId);
+	var blueLeatherData = await getDataFromRealTimeAPI(blueDragonLeatherId);
+	var redLeatherData = await getDataFromRealTimeAPI(redDragonLeatherId);
+	var blackLeatherData = await getDataFromRealTimeAPI(blackDragonLeatherId);
+	
+	var greenLeatherGEPrice = await getGEPrice(greenDragonhideId);
+	var blueLeatherGEPrice = await getGEPrice(blueDragonhideId);
+	var redLeatherGEPrice = await getGEPrice(redDragonhideId);
+	var blackLeatherGEPrice = await getGEPrice(blackDragonhideId);
+
+	addHideColorToUI(greenHideData,greenLeatherData, greenHideGEPrice, greenLeatherGEPrice,"green");
+	addHideColorToUI(blueHideData,blueLeatherData, blueHideGEPrice, blueLeatherGEPrice,"blue");
+	addHideColorToUI(redHideData,redLeatherData, redHideGEPrice, redLeatherGEPrice,"red");
+	addHideColorToUI(blackHideData,blackLeatherData, blackHideGEPrice, blackLeatherGEPrice,"black");
 
 
 	/*
