@@ -23,9 +23,32 @@ async function getDataFromAPI(id) {
 
 }
 
-function getTime(unixTimestamp) {
+function getTimeString(unixTimestamp) {
 	var date = new Date(unixTimestamp * 1000);
 	return date.toLocaleTimeString();
+}
+
+function addHideColorToUI(hideData, leatherData, color){
+
+	var cost = Math.max(hideData.high,hideData.low);
+	var revenue = Math.min(leatherData.low,leatherData.high)
+	var tax = Math.floor(revenue*.01);
+
+	var profit = revenue-tax-cost;
+
+	document.getElementById(color+'Profit').innerHTML = profit;
+	document.getElementById(color+'ProfitPerHour').innerHTML = USDollar.format(profit*7500);
+
+	document.getElementById(color+'hhp').innerHTML = hideData.high;
+	document.getElementById(color+'hht').innerHTML = getTimeString(hideData.highTime);
+	document.getElementById(color+'hlp').innerHTML = hideData.low;
+	document.getElementById(color+'hlt').innerHTML = getTimeString(hideData.lowTime);
+
+	document.getElementById(color+'lhp').innerHTML = leatherData.high;
+	document.getElementById(color+'lht').innerHTML = getTimeString(leatherData.highTime);
+	document.getElementById(color+'llp').innerHTML = leatherData.low;
+	document.getElementById(color+'llt').innerHTML = getTimeString(leatherData.lowTime);
+
 }
 
 (async () => {
@@ -40,12 +63,18 @@ function getTime(unixTimestamp) {
 	var redLeatherData = await getDataFromAPI(redDragonLeatherId);
 	var blackLeatherData = await getDataFromAPI(blackDragonLeatherId);
 
+	addHideColorToUI(greenHideData,greenLeatherData,"green");
+	addHideColorToUI(blueHideData,blueLeatherData,"blue");
+	addHideColorToUI(redHideData,redLeatherData,"red");
+	addHideColorToUI(blackHideData,blackLeatherData,"black");
 
 
-	var greenProfit = Math.min(greenLeatherData.low,greenLeatherData.high) - Math.max(greenHideData.high,greenHideData.low);
-	var blueProfit = Math.min(blueLeatherData.low,blueLeatherData.high) - Math.max(blueHideData.high,blueHideData.low);
-	var redProfit = Math.min(redLeatherData.low,redLeatherData.high) - Math.max(redHideData.high,redHideData.low);
-	var blackProfit = Math.min(blackLeatherData.low,blackLeatherData.high) - Math.max(blackHideData.high,blackHideData.low);
+	/*
+
+	var greenProfit = Math.min(greenLeatherData.low,greenLeatherData.high)*.99 - Math.max(greenHideData.high,greenHideData.low);
+	var blueProfit = Math.min(blueLeatherData.low,blueLeatherData.high)*.99 - Math.max(blueHideData.high,blueHideData.low);
+	var redProfit = Math.min(redLeatherData.low,redLeatherData.high)*.99 - Math.max(redHideData.high,redHideData.low);
+	var blackProfit = Math.min(blackLeatherData.low,blackLeatherData.high)*.99 - Math.max(blackHideData.high,blackHideData.low);
 
 	document.getElementById('greenProfit').innerHTML = greenProfit;
 	document.getElementById('greenProfitPerHour').innerHTML = USDollar.format(greenProfit*7500);
@@ -60,45 +89,45 @@ function getTime(unixTimestamp) {
 	document.getElementById('blackProfitPerHour').innerHTML = USDollar.format(blackProfit*7500);
 
 	document.getElementById('ghhp').innerHTML = greenHideData.high;
-	document.getElementById('ghht').innerHTML = getTime(greenHideData.highTime);
+	document.getElementById('ghht').innerHTML = getTimeString(greenHideData.highTime);
 	document.getElementById('ghlp').innerHTML = greenHideData.low;
-	document.getElementById('ghlt').innerHTML = getTime(greenHideData.lowTime);
+	document.getElementById('ghlt').innerHTML = getTimeString(greenHideData.lowTime);
 
 	document.getElementById('bluehhp').innerHTML = blueHideData.high;
-	document.getElementById('bluehht').innerHTML = getTime(blueHideData.highTime);
+	document.getElementById('bluehht').innerHTML = getTimeString(blueHideData.highTime);
 	document.getElementById('bluehlp').innerHTML = blueHideData.low;
-	document.getElementById('bluehlt').innerHTML = getTime(blueHideData.lowTime);
+	document.getElementById('bluehlt').innerHTML = getTimeString(blueHideData.lowTime);
 
 	document.getElementById('rhhp').innerHTML = redHideData.high;
-	document.getElementById('rhht').innerHTML = getTime(redHideData.highTime);
+	document.getElementById('rhht').innerHTML = getTimeString(redHideData.highTime);
 	document.getElementById('rhlp').innerHTML = redHideData.low;
-	document.getElementById('rhlt').innerHTML = getTime(redHideData.lowTime);
+	document.getElementById('rhlt').innerHTML = getTimeString(redHideData.lowTime);
 
 	document.getElementById('blackhhp').innerHTML = blackHideData.high;
-	document.getElementById('blackhht').innerHTML = getTime(blackHideData.highTime);
+	document.getElementById('blackhht').innerHTML = getTimeString(blackHideData.highTime);
 	document.getElementById('blackhlp').innerHTML = blackHideData.low;
-	document.getElementById('blackhlt').innerHTML = getTime(blackHideData.lowTime);
+	document.getElementById('blackhlt').innerHTML = getTimeString(blackHideData.lowTime);
 
 
 
 	document.getElementById('glhp').innerHTML = greenLeatherData.high;
-	document.getElementById('glht').innerHTML = getTime(greenLeatherData.highTime);
+	document.getElementById('glht').innerHTML = getTimeString(greenLeatherData.highTime);
 	document.getElementById('gllp').innerHTML = greenLeatherData.low;
-	document.getElementById('gllt').innerHTML = getTime(greenLeatherData.lowTime);
+	document.getElementById('gllt').innerHTML = getTimeString(greenLeatherData.lowTime);
 
 	document.getElementById('bluelhp').innerHTML = blueLeatherData.high;
-	document.getElementById('bluelht').innerHTML = getTime(blueLeatherData.highTime);
+	document.getElementById('bluelht').innerHTML = getTimeString(blueLeatherData.highTime);
 	document.getElementById('bluellp').innerHTML = blueLeatherData.low;
-	document.getElementById('bluellt').innerHTML = getTime(blueLeatherData.lowTime);
+	document.getElementById('bluellt').innerHTML = getTimeString(blueLeatherData.lowTime);
 
 	document.getElementById('rlhp').innerHTML = redLeatherData.high;
-	document.getElementById('rlht').innerHTML = getTime(redLeatherData.highTime);
+	document.getElementById('rlht').innerHTML = getTimeString(redLeatherData.highTime);
 	document.getElementById('rllp').innerHTML = redLeatherData.low;
-	document.getElementById('rllt').innerHTML = getTime(redLeatherData.lowTime);
+	document.getElementById('rllt').innerHTML = getTimeString(redLeatherData.lowTime);
 
 	document.getElementById('blacklhp').innerHTML = blackLeatherData.high;
-	document.getElementById('blacklht').innerHTML = getTime(blackLeatherData.highTime);
+	document.getElementById('blacklht').innerHTML = getTimeString(blackLeatherData.highTime);
 	document.getElementById('blackllp').innerHTML = blackLeatherData.low;
-	document.getElementById('blackllt').innerHTML = getTime(blackLeatherData.lowTime);
-
+	document.getElementById('blackllt').innerHTML = getTimeString(blackLeatherData.lowTime);
+	*/
 })();
