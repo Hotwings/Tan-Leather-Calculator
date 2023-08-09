@@ -9,7 +9,7 @@ var redDragonLeatherId = 2507;
 var blackDragonLeatherId = 2509;
 
 var baseRealTimeURL = "https://prices.runescape.wiki/api/v1/osrs/latest";
-var baseGeURL = "http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
+var baseGeURL = "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
 
 let USDollar = new Intl.NumberFormat('en-US', {
     style: 'currency',
