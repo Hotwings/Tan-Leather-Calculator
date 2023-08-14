@@ -8,6 +8,26 @@ var blueDragonLeatherId = 2505;
 var redDragonLeatherId = 2507;
 var blackDragonLeatherId = 2509;
 
+var prayerPotion1Id = 143;
+var prayerPotion2Id = 141;
+var prayerPotion3Id = 139;
+var prayerPotion4Id = 2434;
+
+var saradominBrew1Id = 6691;
+var saradominBrew2Id = 6689;
+var saradominBrew3Id = 6687;
+var saradominBrew4Id = 6685;
+
+var staminaPotion1Id = 12631
+var staminaPotion2Id = 12629
+var staminaPotion3Id = 12627
+var staminaPotion4Id = 12625
+
+var superRestore1Id = 3030;
+var superRestore2Id = 3028;
+var superRestore3Id = 3026;
+var superRestore4Id = 3024;
+
 var baseRealTimeURL = "https://prices.runescape.wiki/api/v1/osrs/latest";
 //var baseGeURL = "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json"
 
@@ -34,7 +54,51 @@ function getTimeString(unixTimestamp) {
 	return date.toLocaleTimeString();
 }
 
-function addHideColorToUI(hideData, leatherData,/* hideGE, leatherGE,*/ color) {
+async function addPotionToDecantTable(potion1Id, potion2Id, potion3Id, potion4Id, potionName) {
+	var potion1Data = await getDataFromRealTimeAPI(potion1Id);
+	var potion2Data = await getDataFromRealTimeAPI(potion2Id);
+	var potion3Data = await getDataFromRealTimeAPI(potion3Id);
+	var potion4Data = await getDataFromRealTimeAPI(potion4Id);
+
+	var tr = document.createElement("tr");
+
+	var nameElem = document.createElement("td");
+	nameElem.innerText = potionName;
+	tr.appendChild(nameElem);
+
+	var oneDoseCostElem = document.createElement("td");
+	oneDoseCostElem.innerText = potion1Data.high;
+	tr.appendChild(oneDoseCostElem);
+	var oneDoseProfitElem = document.createElement("td");
+	oneDoseProfitElem.innerText = Math.round(potion4Data.low - (potion1Data.high * 4));
+	tr.appendChild(oneDoseProfitElem);
+
+	var twoDoseCostElem = document.createElement("td");
+	twoDoseCostElem.innerText = potion2Data.high;
+	tr.appendChild(twoDoseCostElem);
+	var twoDoseProfitElem = document.createElement("td");
+	twoDoseProfitElem.innerText = Math.round(potion4Data.low - ((potion2Data.high / 2) * 4));
+	tr.appendChild(twoDoseProfitElem);
+
+	var threeDoseCostElem = document.createElement("td");
+	threeDoseCostElem.innerText = potion3Data.high;
+	tr.appendChild(threeDoseCostElem);
+	var threeDoseProfitElem = document.createElement("td");
+	threeDoseProfitElem.innerText = Math.round(potion4Data.low - ((potion3Data.high / 3) * 4));
+	tr.appendChild(threeDoseProfitElem);
+
+	var fourDoseSellPriceElem = document.createElement("td");
+	fourDoseSellPriceElem.innerText = potion4Data.low;
+	tr.appendChild(fourDoseSellPriceElem);
+
+	document.getElementById("decantTable").appendChild(tr);
+
+}
+
+async function addHideColorToUI(hideId, leatherId,/* hideGE, leatherGE,*/ color) {
+
+	var hideData = await getDataFromRealTimeAPI(hideId);
+	var leatherData = await getDataFromRealTimeAPI(leatherId);
 
 	var cost = Math.max(hideData.high, hideData.low);
 	var revenue = Math.min(leatherData.low, leatherData.high)
@@ -60,37 +124,31 @@ function addHideColorToUI(hideData, leatherData,/* hideGE, leatherGE,*/ color) {
 
 }
 
-(async () => {
 
-	var greenHideData = await getDataFromRealTimeAPI(greenDragonhideId);
-	var blueHideData = await getDataFromRealTimeAPI(blueDragonhideId);
-	var redHideData = await getDataFromRealTimeAPI(redDragonhideId);
-	var blackHideData = await getDataFromRealTimeAPI(blackDragonhideId);
+//Main method
+(async () => {
 
 	/*
 	var greenHideGEPrice = await getGEPrice(greenDragonhideId);
 	var blueHideGEPrice = await getGEPrice(blueDragonhideId);
 	var redHideGEPrice = await getGEPrice(redDragonhideId);
 	var blackHideGEPrice = await getGEPrice(blackDragonhideId);
-	*/
 
-	var greenLeatherData = await getDataFromRealTimeAPI(greenDragonLeatherId);
-	var blueLeatherData = await getDataFromRealTimeAPI(blueDragonLeatherId);
-	var redLeatherData = await getDataFromRealTimeAPI(redDragonLeatherId);
-	var blackLeatherData = await getDataFromRealTimeAPI(blackDragonLeatherId);
-
-	/*
 	var greenLeatherGEPrice = await getGEPrice(greenDragonhideId);
 	var blueLeatherGEPrice = await getGEPrice(blueDragonhideId);
 	var redLeatherGEPrice = await getGEPrice(redDragonhideId);
 	var blackLeatherGEPrice = await getGEPrice(blackDragonhideId);
 	*/
 
-	addHideColorToUI(greenHideData, greenLeatherData, /*greenHideGEPrice, greenLeatherGEPrice,*/"green");
-	addHideColorToUI(blueHideData, blueLeatherData, /*blueHideGEPrice, blueLeatherGEPrice,*/"blue");
-	addHideColorToUI(redHideData, redLeatherData, /*redHideGEPrice, redLeatherGEPrice,*/"red");
-	addHideColorToUI(blackHideData, blackLeatherData, /*blackHideGEPrice, blackLeatherGEPrice,*/"black");
+	addHideColorToUI(greenDragonhideId, greenDragonLeatherId, /*greenHideGEPrice, greenLeatherGEPrice,*/"green");
+	addHideColorToUI(blueDragonhideId, blueDragonLeatherId, /*blueHideGEPrice, blueLeatherGEPrice,*/"blue");
+	addHideColorToUI(redDragonhideId, redDragonLeatherId, /*redHideGEPrice, redLeatherGEPrice,*/"red");
+	addHideColorToUI(blackDragonhideId, blackDragonLeatherId, /*blackHideGEPrice, blackLeatherGEPrice,*/"black");
 
+	addPotionToDecantTable(prayerPotion1Id, prayerPotion2Id, prayerPotion3Id, prayerPotion4Id, "Prayer Potion");
+	addPotionToDecantTable(saradominBrew1Id, saradominBrew2Id, saradominBrew3Id, saradominBrew4Id, "Saradomin brew");
+	addPotionToDecantTable(staminaPotion1Id, staminaPotion2Id, staminaPotion3Id, staminaPotion4Id, "Stamina potion");
+	addPotionToDecantTable(superRestore1Id, superRestore2Id, superRestore3Id, superRestore4Id, "Super restore");
 
 	/*
 
