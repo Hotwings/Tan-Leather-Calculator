@@ -95,7 +95,43 @@ async function addPotionToDecantTable(potion1Id, potion2Id, potion3Id, potion4Id
 
 }
 
-async function addHideColorToUI(hideId, leatherId,/* hideGE, leatherGE,*/ color) {
+async function addAirBattlestaffTable() {
+	var airOrbData = await getDataFromRealTimeAPI(573);
+	var battlestaffData = await getDataFromRealTimeAPI(1391);
+	var airBattlestaffData = await getDataFromRealTimeAPI(1397);
+
+	var tr = document.createElement("tr");
+
+	var airOrbCost = Math.max(airOrbData.high, airOrbData.low);
+	var battlestaffCost = Math.max(battlestaffData.high, battlestaffData.low);
+	var totalSpent = airOrbCost+battlestaffCost;
+	var airBattlestaffRevenue = Math.min(airBattlestaffData.high, airBattlestaffData.low);
+	var tax = Math.floor(airBattlestaffRevenue * .01);
+	var profit = airBattlestaffRevenue-tax-totalSpent;
+	var gpPerXp = profit/137.5;
+
+	var airOrbCell = document.createElement("td");
+	airOrbCell.innerText = airOrbCost;
+	tr.appendChild(airOrbCell);
+
+	var battlestaffCell = document.createElement("td");
+	battlestaffCell.innerText = battlestaffCost;
+	tr.appendChild(battlestaffCell);
+
+	var airBattlestaffCell = document.createElement("td");
+	airBattlestaffCell.innerText = airBattlestaffRevenue;
+	tr.appendChild(airBattlestaffCell);
+
+	var gpPerXpCell = document.createElement("td");
+	gpPerXpCell.innerText = gpPerXp;
+	tr.appendChild(gpPerXpCell);
+
+
+	document.getElementById("airBattleStaffTable").appendChild(tr);
+
+}
+
+async function addHideColorToUI(hideId, leatherId,/* hideGE, leatherGE,*/ color, astralRunePrice, natureRunePrice) {
 
 	var hideData = await getDataFromRealTimeAPI(hideId);
 	var leatherData = await getDataFromRealTimeAPI(leatherId);
@@ -104,7 +140,10 @@ async function addHideColorToUI(hideId, leatherId,/* hideGE, leatherGE,*/ color)
 	var revenue = Math.min(leatherData.low, leatherData.high)
 	var tax = Math.floor(revenue * .01);
 
-	var profit = revenue - tax - cost;
+	var astralRuneCostPerHide = ((astralRunePrice*2)/5);
+	var natureRuneCostPerHide = natureRunePrice/5;
+
+	var profit = revenue - tax - cost - (astralRuneCostPerHide+natureRuneCostPerHide);
 
 	document.getElementById(color + 'Profit').innerHTML = profit;
 	document.getElementById(color + 'ProfitPerHour').innerHTML = USDollar.format(profit * 7500);
@@ -140,16 +179,27 @@ async function addHideColorToUI(hideId, leatherId,/* hideGE, leatherGE,*/ color)
 	var blackLeatherGEPrice = await getGEPrice(blackDragonhideId);
 	*/
 
-	addHideColorToUI(greenDragonhideId, greenDragonLeatherId, /*greenHideGEPrice, greenLeatherGEPrice,*/"green");
-	addHideColorToUI(blueDragonhideId, blueDragonLeatherId, /*blueHideGEPrice, blueLeatherGEPrice,*/"blue");
-	addHideColorToUI(redDragonhideId, redDragonLeatherId, /*redHideGEPrice, redLeatherGEPrice,*/"red");
-	addHideColorToUI(blackDragonhideId, blackDragonLeatherId, /*blackHideGEPrice, blackLeatherGEPrice,*/"black");
+	var astralRuneData = await getDataFromRealTimeAPI(9075);
+	var natureRuneData = await getDataFromRealTimeAPI(561);
+
+	var astralRunePrice = Math.max(astralRuneData.high, astralRuneData.low);
+	var natureRunePrice = Math.max(natureRuneData.high, natureRuneData.low);
+
+	
+	document.getElementById('astralRuneCost').innerHTML = astralRunePrice;
+	document.getElementById('natureRuneCost').innerHTML = natureRunePrice;
+
+	addHideColorToUI(greenDragonhideId, greenDragonLeatherId, /*greenHideGEPrice, greenLeatherGEPrice,*/"green", astralRunePrice, natureRunePrice);
+	addHideColorToUI(blueDragonhideId, blueDragonLeatherId, /*blueHideGEPrice, blueLeatherGEPrice,*/"blue", astralRunePrice, natureRunePrice);
+	addHideColorToUI(redDragonhideId, redDragonLeatherId, /*redHideGEPrice, redLeatherGEPrice,*/"red", astralRunePrice, natureRunePrice);
+	addHideColorToUI(blackDragonhideId, blackDragonLeatherId, /*blackHideGEPrice, blackLeatherGEPrice,*/"black", astralRunePrice, natureRunePrice);
 
 	addPotionToDecantTable(prayerPotion1Id, prayerPotion2Id, prayerPotion3Id, prayerPotion4Id, "Prayer Potion");
 	addPotionToDecantTable(saradominBrew1Id, saradominBrew2Id, saradominBrew3Id, saradominBrew4Id, "Saradomin brew");
 	addPotionToDecantTable(staminaPotion1Id, staminaPotion2Id, staminaPotion3Id, staminaPotion4Id, "Stamina potion");
 	addPotionToDecantTable(superRestore1Id, superRestore2Id, superRestore3Id, superRestore4Id, "Super restore");
 
+	addAirBattlestaffTable();
 	/*
 
 	var greenProfit = Math.min(greenLeatherData.low,greenLeatherData.high)*.99 - Math.max(greenHideData.high,greenHideData.low);
